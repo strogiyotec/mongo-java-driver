@@ -34,6 +34,7 @@ import com.mongodb.internal.operation.MapReduceStatistics;
 import com.mongodb.internal.operation.Operations;
 import com.mongodb.internal.operation.ReadOperation;
 import com.mongodb.internal.operation.ReadOperationCursor;
+import com.mongodb.internal.operation.VoidWriteOperationThenCursorReadOperation;
 import com.mongodb.internal.operation.WriteOperation;
 import com.mongodb.lang.Nullable;
 import com.mongodb.reactivestreams.client.ClientSession;

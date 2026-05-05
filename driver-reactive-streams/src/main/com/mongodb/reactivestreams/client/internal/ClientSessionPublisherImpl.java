@@ -27,11 +27,11 @@ import com.mongodb.internal.TimeoutContext;
 import com.mongodb.internal.observability.micrometer.TracingManager;
 import com.mongodb.internal.observability.micrometer.TransactionSpan;
 import com.mongodb.internal.operation.AbortTransactionOperation;
-import com.mongodb.internal.operation.AsyncWriteThenReadOperationCursor;
 import com.mongodb.internal.operation.CommitTransactionOperation;
 import com.mongodb.internal.operation.ReadOperation;
 import com.mongodb.internal.operation.WriteConcernHelper;
 import com.mongodb.internal.operation.WriteOperation;
+import com.mongodb.internal.operation.WriteThenReadOperationCursor;
 import com.mongodb.internal.session.BaseClientSessionImpl;
 import com.mongodb.internal.session.ServerSessionPool;
 import com.mongodb.lang.Nullable;
@@ -89,7 +89,8 @@ final class ClientSessionPublisherImpl extends BaseClientSessionImpl implements 
 
     @Override
     public void notifyOperationInitiated(final Object operation) {
-        assertTrue(operation instanceof ReadOperation || operation instanceof WriteOperation || operation instanceof AsyncWriteThenReadOperationCursor);
+        assertTrue(operation instanceof ReadOperation || operation instanceof WriteOperation
+                || operation instanceof WriteThenReadOperationCursor);
         if (!(hasActiveTransaction() || operation instanceof CommitTransactionOperation)) {
             assertTrue(getPinnedServerAddress() == null
                     || (transactionState != TransactionState.ABORTED && transactionState != TransactionState.NONE));

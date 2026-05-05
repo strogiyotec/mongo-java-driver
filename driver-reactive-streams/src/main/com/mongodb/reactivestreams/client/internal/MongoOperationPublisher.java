@@ -61,7 +61,7 @@ import com.mongodb.internal.TimeoutSettings;
 import com.mongodb.internal.async.SingleResultCallback;
 import com.mongodb.internal.bulk.WriteRequest;
 import com.mongodb.internal.async.AsyncBatchCursor;
-import com.mongodb.internal.operation.AsyncWriteThenReadOperationCursor;
+import com.mongodb.internal.operation.WriteThenReadOperationCursor;
 import com.mongodb.internal.operation.IndexHelper;
 import com.mongodb.internal.operation.Operations;
 import com.mongodb.internal.operation.ReadOperation;
@@ -517,9 +517,9 @@ public final class MongoOperationPublisher<T> {
 
     <R> Mono<AsyncBatchCursor<R>> createWriteThenReadOperationMono(
             final Function<Operations<?>, TimeoutSettings> timeoutSettingsFunction,
-            final Supplier<AsyncWriteThenReadOperationCursor<R>> operationSupplier,
+            final Supplier<WriteThenReadOperationCursor<R>> operationSupplier,
             @Nullable final ClientSession clientSession) {
-        AsyncWriteThenReadOperationCursor<R> operation = operationSupplier.get();
+        WriteThenReadOperationCursor<R> operation = operationSupplier.get();
         return getExecutor(timeoutSettingsFunction.apply(operations))
                 .execute(operation, getReadConcern(), clientSession);
     }

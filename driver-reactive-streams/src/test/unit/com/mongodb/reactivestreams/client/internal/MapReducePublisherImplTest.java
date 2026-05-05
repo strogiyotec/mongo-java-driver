@@ -20,7 +20,7 @@ import com.mongodb.MongoException;
 import com.mongodb.ReadPreference;
 import com.mongodb.WriteConcern;
 import com.mongodb.client.model.Sorts;
-import com.mongodb.internal.operation.AsyncWriteThenReadOperationCursor;
+import com.mongodb.internal.operation.WriteThenReadOperationCursor;
 import com.mongodb.internal.operation.MapReduceStatistics;
 import com.mongodb.internal.operation.MapReduceToCollectionOperation;
 import com.mongodb.internal.operation.MapReduceWithInlineResultsOperation;
@@ -66,7 +66,7 @@ public class MapReducePublisherImplTest extends TestHelper {
 
         Flux.from(publisher).blockFirst();
 
-        AsyncWriteThenReadOperationCursor<?> op = executor.getWriteThenReadOperation();
+        WriteThenReadOperationCursor<?> op = executor.getWriteThenReadOperation();
         assertNotNull(op, "expected a write-then-read operation");
         assertEquals(NAMESPACE, op.getNamespace());
         // Must not fall through to the plain read-operation path.

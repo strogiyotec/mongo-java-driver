@@ -20,17 +20,20 @@ import com.mongodb.MongoNamespace;
 import com.mongodb.internal.async.AsyncBatchCursor;
 import com.mongodb.internal.async.SingleResultCallback;
 import com.mongodb.internal.binding.AsyncReadWriteBinding;
+import com.mongodb.internal.binding.ReadWriteBinding;
 import com.mongodb.internal.connection.OperationContext;
 
 /**
- * An async-only operation that performs a write followed by a read that returns a cursor.
+ * An operation that performs a write followed by a read that returns a cursor, using a
+ * single read-write binding for both phases.
  *
- * <p>Unlike {@link ReadOperationCursor}, this operation requires an {@link AsyncReadWriteBinding}
- * so that both the write and the read portions can be executed without narrowing casts.
+ * <p>Having a dedicated interface lets the executor hand the operation a binding that is
+ * both a {@link ReadWriteBinding} and an {@link AsyncReadWriteBinding}, avoiding the
+ * narrowing cast from a read-only binding that would otherwise be required.
  *
  * <p>This class is not part of the public API and may be removed or changed at any time</p>
  */
-public interface AsyncWriteThenReadOperationCursor<T> {
+public interface WriteThenReadOperationCursor<T> {
 
     /**
      * @return the command name of the write phase of this operation (e.g. "mapReduce", "aggregate")
@@ -41,6 +44,16 @@ public interface AsyncWriteThenReadOperationCursor<T> {
      * @return the namespace the write phase targets
      */
     MongoNamespace getNamespace();
+
+    /**
+     * Executes the write phase followed by the read phase, returning a {@link BatchCursor}
+     * over the results of the read.
+     *
+     * @param binding the read-write binding used by both phases
+     * @param operationContext the operation context to use
+     * @return the batch cursor produced by the read phase
+     */
+    BatchCursor<T> execute(ReadWriteBinding binding, OperationContext operationContext);
 
     /**
      * Executes the write phase followed by the read phase, yielding an {@link AsyncBatchCursor}

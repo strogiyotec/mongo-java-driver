@@ -34,10 +34,10 @@ import com.mongodb.internal.connection.ReadConcernAwareNoOpSessionContext;
 import com.mongodb.internal.observability.micrometer.Span;
 import com.mongodb.internal.observability.micrometer.TracingManager;
 import com.mongodb.internal.async.AsyncBatchCursor;
-import com.mongodb.internal.operation.AsyncWriteThenReadOperationCursor;
 import com.mongodb.internal.operation.OperationHelper;
 import com.mongodb.internal.operation.ReadOperation;
 import com.mongodb.internal.operation.WriteOperation;
+import com.mongodb.internal.operation.WriteThenReadOperationCursor;
 import com.mongodb.lang.Nullable;
 import com.mongodb.reactivestreams.client.ClientSession;
 import com.mongodb.reactivestreams.client.ReactiveContextProvider;
@@ -182,7 +182,7 @@ public class OperationExecutorImpl implements OperationExecutor {
     }
 
     @Override
-    public <T> Mono<AsyncBatchCursor<T>> execute(final AsyncWriteThenReadOperationCursor<T> operation, final ReadConcern readConcern,
+    public <T> Mono<AsyncBatchCursor<T>> execute(final WriteThenReadOperationCursor<T> operation, final ReadConcern readConcern,
             @Nullable final ClientSession session) {
         isTrue("open", !mongoClient.getCluster().isClosed());
         notNull("operation", operation);

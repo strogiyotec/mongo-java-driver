@@ -20,9 +20,9 @@ import com.mongodb.ReadConcern;
 import com.mongodb.ReadPreference;
 import com.mongodb.internal.TimeoutSettings;
 import com.mongodb.internal.async.AsyncBatchCursor;
-import com.mongodb.internal.operation.AsyncWriteThenReadOperationCursor;
 import com.mongodb.internal.operation.ReadOperation;
 import com.mongodb.internal.operation.WriteOperation;
+import com.mongodb.internal.operation.WriteThenReadOperationCursor;
 import com.mongodb.lang.Nullable;
 import com.mongodb.reactivestreams.client.ClientSession;
 import reactor.core.publisher.Mono;
@@ -67,7 +67,7 @@ public interface OperationExecutor {
      * @param session the session to associate this operation with
      * @param <T> the document type returned by the cursor.
      */
-    <T> Mono<AsyncBatchCursor<T>> execute(AsyncWriteThenReadOperationCursor<T> operation,
+    <T> Mono<AsyncBatchCursor<T>> execute(WriteThenReadOperationCursor<T> operation,
             ReadConcern readConcern, @Nullable ClientSession session);
 
     /**

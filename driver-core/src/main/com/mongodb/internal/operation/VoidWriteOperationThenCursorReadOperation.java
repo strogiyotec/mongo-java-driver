@@ -14,25 +14,38 @@
  * limitations under the License.
  */
 
-package com.mongodb.reactivestreams.client.internal;
+package com.mongodb.internal.operation;
 
 import com.mongodb.MongoNamespace;
 import com.mongodb.internal.async.AsyncBatchCursor;
 import com.mongodb.internal.async.SingleResultCallback;
 import com.mongodb.internal.binding.AsyncReadWriteBinding;
+import com.mongodb.internal.binding.ReadWriteBinding;
 import com.mongodb.internal.connection.OperationContext;
-import com.mongodb.internal.operation.AsyncWriteThenReadOperationCursor;
-import com.mongodb.internal.operation.ReadOperationCursor;
-import com.mongodb.internal.operation.WriteOperation;
 
-class VoidWriteOperationThenCursorReadOperation<T> implements AsyncWriteThenReadOperationCursor<T> {
+/**
+ * A {@link WriteThenReadOperationCursor} that performs a {@link WriteOperation} returning
+ * {@code Void} followed by a {@link ReadOperationCursor}, using a single read-write
+ * binding for both phases.
+ *
+ * <p>This class is not part of the public API and may be removed or changed at any time</p>
+ */
+public final class VoidWriteOperationThenCursorReadOperation<T> implements WriteThenReadOperationCursor<T> {
     private final WriteOperation<Void> writeOperation;
     private final ReadOperationCursor<T> cursorReadOperation;
 
-    VoidWriteOperationThenCursorReadOperation(final WriteOperation<Void> writeOperation,
-                                              final ReadOperationCursor<T> cursorReadOperation) {
+    public VoidWriteOperationThenCursorReadOperation(final WriteOperation<Void> writeOperation,
+                                                     final ReadOperationCursor<T> cursorReadOperation) {
         this.writeOperation = writeOperation;
         this.cursorReadOperation = cursorReadOperation;
+    }
+
+    public WriteOperation<Void> getWriteOperation() {
+        return writeOperation;
+    }
+
+    public ReadOperationCursor<T> getCursorReadOperation() {
+        return cursorReadOperation;
     }
 
     @Override
@@ -43,6 +56,12 @@ class VoidWriteOperationThenCursorReadOperation<T> implements AsyncWriteThenRead
     @Override
     public MongoNamespace getNamespace() {
         return writeOperation.getNamespace();
+    }
+
+    @Override
+    public BatchCursor<T> execute(final ReadWriteBinding binding, final OperationContext operationContext) {
+        writeOperation.execute(binding, operationContext);
+        return cursorReadOperation.execute(binding, operationContext);
     }
 
     @Override
