@@ -36,6 +36,7 @@ sourceSets {
 
 dependencies {
     api(project(":driver-sync"))
+    api(project(":driver-reactive-streams"))
     api(project(":mongodb-crypt"))
 
     implementation(platform(libs.netty.bom))
@@ -58,6 +59,14 @@ tasks.register<JavaExec>("runNetty") {
     group = "application"
     description = "Run the Netty main class."
     mainClass.set("com.mongodb.benchmark.benchmarks.netty.BenchmarkNettyProviderSuite")
+    classpath = sourceSets["main"].runtimeClasspath
+    jvmArgs = application.applicationDefaultJvmArgs.toList()
+}
+
+tasks.register<JavaExec>("runReactive") {
+    group = "application"
+    description = "Run the Reactive Streams main class."
+    mainClass.set("com.mongodb.benchmark.benchmarks.reactive.BenchmarkReactiveSuite")
     classpath = sourceSets["main"].runtimeClasspath
     jvmArgs = application.applicationDefaultJvmArgs.toList()
 }
